@@ -93,7 +93,7 @@ app.get('/api/foodData', async (req, res) => {
     // res.sendStatus(200);
     order.orderModule.create(orderDetails).then((data) => {
         console.log('inside ordermodule')
-        res.send(200);
+        res.sendStatus(200);
     }).catch((e) => { })
 })
 
