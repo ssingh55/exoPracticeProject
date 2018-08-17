@@ -1,37 +1,77 @@
-const express = require('express');
-const app = express();
-const port = 3000;
-const URI = "mongodb://exotel:exotel272@ds123562.mlab.com:23562/exoteltesting";
-const orderModule = require('./model');
-const bodyParser = require('body-parser');
-const Mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+    bodyParser = require('body-parser'),
+    express = require('express'),
+    app = express(),
+    port = 8080,
+    URI = "mongodb://exotel:exotel272@ds123372.mlab.com:23372/exotelfoodorder",
+    order = require('./model');
 
-Mongoose.connect(URI, { useNewUrlParser: true }, () => {
-    console.log('DB connected');
+mongoose.connect(URI, { useNewUrlParser: true }, () => {
+    console.log('DB connected')
 })
-
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello world');
+    res.send('hello')
 })
 
-// app.get('/api/sms',(req,res)=>{
-//     res.send('Your order with order id '+Date.now());
-// })
+app.get('/api/foodType', async (req, res) => {
+    let x = {};
+    await order.foodType.find({}).then(data => {
+        x = Object.keys(data[0].foodName.toObject());
+    })
+    console.log(x);
+    var y = "";
+    for (let i = 0; i < x.length; i++) {
+        y += `Press ${i + 1} for ${x[i]}. `;
+    }
+    y += 'Press the key with #';
+    res.type('text/plain')
+    res.send(y)
+})
 
-app.get('/api/data', async (req, res) => {
+app.get('/api/foodData', async (req, res) => {
     const bodyData = await req.query;
     // console.log(bodyData);
-    orderDetails={};
-    orderDetails.callFrom = bodyData.CallFrom;
+    orderDetails = {};
+    orderDetails.orderFrom = bodyData.CallFrom;
     orderDetails.time = bodyData.CurrentTime;
-    orderDetails.item = bodyData.digits;
+    // bodyData.digits.charAt(1)
+    switch (bodyData.digits) {
+        case '"1"':
+            orderDetails.orderType = "vegburger";
+            break;
+        case '"2"':
+            orderDetails.orderType = "nonvegburger";
+            break;
+        case '"3"':
+            orderDetails.orderType = "vegpizza";
+            break;
+        case '"4"':
+            orderDetails.orderType = "nonvegpizza";
+            break;
+        case '"5"':
+            orderDetails.orderType = "paneerbiryani";
+            break;
+        case '"6"':
+            orderDetails.orderType = "chickenbiryani";
+            break;
+        case '"7"':
+            orderDetails.orderType = "vegbiryani";
+            break;
+        case '"8"':
+            orderDetails.orderType = "vegmeal";
+            break;
+        case '"9"':
+            orderDetails.orderType = "nonvegmeal";
+            break;
+    }
+    orderDetails.orderPlaced = true;
     console.log(orderDetails);
-    orderModule.create(orderDetails).then((data) => {
+    order.orderModule.create(orderDetails).then((data) => {
+        console.log('inside ordermodule')
         res.send('ok');
-    }).catch((e)=>{})
+    }).catch((e) => { })
 })
 
-app.listen(port, () => console.log(`connected to port ${port}`));
+app.listen(port, () => console.log(`Connected to port ${port}`));

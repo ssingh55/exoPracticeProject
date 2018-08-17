@@ -1,13 +1,23 @@
-const Mongoose = require('mongoose');
-
-const Schema = Mongoose.Schema;
+const mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    callFrom: Number,
+    orderFrom: Number,
     time: String,
-    item: String
+    orderPlaced: Boolean,
+    orderType: String
 });
 
-const orderModule = Mongoose.model('order', orderSchema);
+const foodTypeSchema = new Schema({
+    foodName: {
+        Object
+    }
+}, { collection: 'foodType' })
 
-module.exports = orderModule;
+const foodType = mongoose.model('foodType', foodTypeSchema);
+const orderModule = mongoose.model('order', orderSchema);
+
+module.exports = {
+    orderModule,
+    foodType
+}
