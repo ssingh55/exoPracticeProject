@@ -15,6 +15,15 @@ app.get('/', (req, res) => {
     res.send('hello')
 })
 
+
+var request = require('request');
+
+function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+        console.log(body, ' inside callback');
+    }
+}
+
 app.get('/api/foodType', async (req, res) => {
     let x = {};
     await order.foodType.find({}).then(data => {
@@ -31,7 +40,16 @@ app.get('/api/foodType', async (req, res) => {
 })
 
 app.get('/api/msg', (req, res) => {
+    console.log('inside api msg', req.query.To)
     order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
+        var dataString = `From=${req.query.To}&To=07739063702&Body=${`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id}`}`;
+        var options = {
+            url: 'https://exotel272:0fcfd91af95c606f2c9e4a671aaf700fb9a3e13e@api.exotel.com/v1/Accounts/exotel272/Sms/send',
+            method: 'POST',
+            body: dataString
+        };
+        request(options, callback);
+
         res.type('text/plain');
         res.send(`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id}`);
     })
