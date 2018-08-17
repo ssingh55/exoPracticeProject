@@ -115,4 +115,8 @@ app.get('/api/foodData', async (req, res) => {
     }).catch((e) => { })
 })
 
+app.put('/api/foodData', (req, res) => {
+    order.orderModule.findByIdAndUpdate(req.query.id, { $set: { orderDetails: false } }, (callback) => { console.log(callback) });
+})
+
 app.listen(port, () => console.log(`Connected to port ${port}`));
