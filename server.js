@@ -23,11 +23,25 @@ app.get('/api/foodType', async (req, res) => {
     console.log(x);
     var y = "";
     for (let i = 0; i < x.length; i++) {
-        y += `Press ${i + 1} for ${x[i]}. `;
+        y += `Press ${i} for ${x[i]}. `;
     }
     y += 'Press the key with #';
     res.type('text/plain')
     res.send(y)
+})
+
+app.get('/api/msg', (req, res) => {
+    order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
+        res.type('text/plain');
+        res.send(`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id}`);
+    })
+})
+
+app.get('/api/greetMsg', (req, res) => {
+    order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
+        res.type('text/plain');
+        res.send(`Thanks for placing the order. Order of ${data.orderType} with orderid ${data._id}`);
+    })
 })
 
 app.get('/api/foodData', async (req, res) => {
@@ -37,18 +51,26 @@ app.get('/api/foodData', async (req, res) => {
     orderDetails.orderFrom = bodyData.CallFrom;
     orderDetails.time = bodyData.CurrentTime;
     // bodyData.digits.charAt(1)
+    if (bodyData.digits.split("").length !== 3) {
+        console.log('in error block');
+        res.sendStatus(404);
+        return;
+    }
     switch (bodyData.digits) {
-        case '"1"':
+        case '"0"':
             orderDetails.orderType = "vegburger";
             break;
-        case '"2"':
+        case '"1"':
             orderDetails.orderType = "nonvegburger";
             break;
-        case '"3"':
+        case '"2"':
             orderDetails.orderType = "vegpizza";
             break;
-        case '"4"':
+        case '"3"':
             orderDetails.orderType = "nonvegpizza";
+            break;
+        case '"4"':
+            orderDetails.orderType = "muttonbiryani";
             break;
         case '"5"':
             orderDetails.orderType = "paneerbiryani";
@@ -67,10 +89,11 @@ app.get('/api/foodData', async (req, res) => {
             break;
     }
     orderDetails.orderPlaced = true;
-    console.log(orderDetails);
+    // console.log(orderDetails);
+    // res.sendStatus(200);
     order.orderModule.create(orderDetails).then((data) => {
         console.log('inside ordermodule')
-        res.send('ok');
+        res.send(200);
     }).catch((e) => { })
 })
 
