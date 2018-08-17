@@ -115,8 +115,22 @@ app.get('/api/foodData', async (req, res) => {
     }).catch((e) => { })
 })
 
-app.put('/api/foodData', (req, res) => {
-    order.orderModule.findByIdAndUpdate(req.query.id, { $set: { orderDetails: false } }, (callback) => { console.log(callback) });
+app.get('/api/foodDataCancel', (req, res) => {
+    order.orderModule.findByIdAndUpdate(req.query.id, { $set: { orderDetails: false } }, (callback, err) => {
+        if (err)
+            res.sendStatus(404)
+        console.log(callback);
+        res.sendStatus(200)
+    });
+})
+
+app.get('/api/foodDataPincode', (req, res) => {
+    order.orderModule.findByIdAndUpdate(req.query.id, { $set: { pincode: false } }, (callback, err) => {
+        if (err)
+            res.sendStatus(404)
+        console.log(callback);
+        res.sendStatus(200)
+    });
 })
 
 app.listen(port, () => console.log(`Connected to port ${port}`));
