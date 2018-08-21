@@ -46,14 +46,14 @@ app.get('/api/msg', (req, res) => {
     console.log('inside api msg', req.query.To)
     order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
         res.type('text/plain');
-        res.send(`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id}`);
+        res.send(`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id} has been placed`);
     })
 })
 
 app.get('/api/greetMsg', (req, res) => {
     order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
         res.type('text/plain');
-        res.send(`Thanks for placing the order. Order of ${data.orderType} with orderid ${data._id}`);
+        res.send(`Thanks for placing the order. Order of ${data.orderType} with orderid ${data._id} has been placed`);
     })
 })
 
