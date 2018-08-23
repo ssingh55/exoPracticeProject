@@ -9,7 +9,7 @@ foodData = async (orderModule, req, res) => {
     console.log('Successfully got the button clicked options');
     console.log(bodyData.digits.split(""))
     if (bodyData.digits.split("").length !== 3) {
-        console.log("in error block");
+        console.log("inside foodData error block");
         res.sendStatus(404);
         return;
     }
@@ -55,11 +55,11 @@ foodData = async (orderModule, req, res) => {
     }
     orderDetails.orderPlaced = true;
     console.log(orderDetails);
-    res.sendStatus(200);
-    // orderModule.create(orderDetails).then((data) => {
-    //     console.log('inside ordermodule')
-    //     res.sendStatus(200);
-    // }).catch((e) => {})
+    // res.sendStatus(200);
+    orderModule.create(orderDetails).then((data, err) => {
+        console.log('inside fooddata ordermodule');
+        res.sendStatus(200);
+    }).catch((e) => {})
 }
 
 module.exports = foodData;

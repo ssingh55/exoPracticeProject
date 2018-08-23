@@ -6,7 +6,7 @@ const orderSchema = new Schema({
         type: String
     },
     pincode: Number,
-    orderFrom: Number,
+    orderFrom: String,
     time: String,
     orderPlaced: Boolean,
     orderType: String,
@@ -20,7 +20,7 @@ const foodSchema = new Schema({
     collection: 'foodType'
 });
 
-const orderModule = mongoose.model('newOrders', orderSchema),
+const orderModule = mongoose.model('neworders', orderSchema),
     foodModule = mongoose.model('foodType', foodSchema);
 
 

@@ -12,7 +12,9 @@ const express = require('express'),
     foodData = require('./foodData'),
     foodCancel = require('./foodCancel'),
     verifyPin = require('./verifyPin'),
-    message = require('./message');
+    message = require('./message'),
+    smsStatus = require('./smsStatus'),
+    smsSend = require('./smsSend');
 let pincode = '';
 
 /*********Mongoose connection****************/
@@ -67,6 +69,16 @@ app.get('/api/foodData', (req, res) => {
 /*****api call for order cancellation*******/
 app.get('/api/foodCancel', (req, res) => {
     foodCancel(order.orderModule, req, res);
+})
+
+/*******api call for sms status*********/
+app.get('/api/smsStatus', (req, res) => {
+    smsStatus(req, res);
+})
+
+/*******api call for sending sms*********/
+app.get('/api/smsSend', (req, res) => {
+    smsSend(req, res);
 })
 
 /******Running on port 8080******/
