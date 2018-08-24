@@ -1,6 +1,7 @@
 foodTypeOtherLocation = async (foodModule, req, res) => {
     let foodTypeObject = {},
         errorDataFetch = false;
+    // req.query = {};
     await foodModule.find(req.query).then((data, err) => {
         if (err || data == null) {
             errorDataFetch = true;

@@ -1,6 +1,6 @@
 msg = (orderModule, req, res) => {
-    console.log('inside api msg', req.query)
-    orderModule.findOne({orderFrom: req.query.To}).sort({
+    // console.log('inside api msg', req.query)
+    orderModule.findOne({orderFrom: req.query.From}).sort({
         $natural: -1
     }).then((data) => {
         res.type('text/plain');
@@ -10,8 +10,8 @@ msg = (orderModule, req, res) => {
 
 greetMsg = (orderModule, req, res) => {
     console.log('inside api greetMsg');
-    console.log(req.query)
-    orderModule.findOne({}).sort({
+    // console.log(req.query)
+    orderModule.findOne({orderFrom: req.query.From}).sort({
         $natural: -1
     }).then((data) => {
         res.type('text/plain');

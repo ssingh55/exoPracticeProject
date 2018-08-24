@@ -2,6 +2,7 @@ foodType = async (foodModule, req, res) => {
     let foodTypeArray = [],
         errorDataFetch = false;
     // console.log('query', req.query);
+    req.query = {};
     await foodModule.find(req.query).then((data, err) => {
         if (err || data.length === 0) {
             errorDataFetch = true;
