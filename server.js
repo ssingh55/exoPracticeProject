@@ -1,26 +1,28 @@
 const express = require('express'),
     app = express(),
+    pathResolve = require('path').resolve,
     URI = "mongodb://exotel:exotel272@ds123372.mlab.com:23372/exotelfoodorder",
     mongoose = require('mongoose'),
-    order = require('./module'),
-    PORT = 8080,
-    options = {
+    order = require(pathResolve('src/js/module')),
+    PORT = process.env.PORT || 8080,
+    // bodyParser = require('body-parser'),
+    config = {
         useNewUrlParser: true
     },
-    foodType = require('./foodType'),
-    foodTypeOther = require('./foodTypeOther'),
-    foodData = require('./foodData'),
-    foodCancel = require('./foodCancel'),
-    verifyPin = require('./verifyPin'),
-    message = require('./message'),
-    smsStatus = require('./smsStatus'),
-    smsSend = require('./smsSend');
+    foodType = require(pathResolve('src/js/foodType')),
+    foodTypeOtherLocation = require(pathResolve('src/js/foodTypeOtherLocation')),
+    foodData = require(pathResolve('src/js/foodData')),
+    foodCancel = require(pathResolve('src/js/foodCancel')),
+    verifyPin = require(pathResolve('src/js/verifyPin')),
+    message = require(pathResolve('src/js/message')),
+    smsStatus = require(pathResolve('src/js/smsStatus')),
+    smsSend = require(pathResolve('src/js/smsSend'));
 let pincode = '';
 
 /*********Mongoose connection****************/
 
 mongoose.Promise = global.Promise;
-mongoose.connect(URI, options, (err, conn) => {
+mongoose.connect(URI, config, (err, conn) => {
         if (err) {
             return;
         }
@@ -28,6 +30,8 @@ mongoose.connect(URI, options, (err, conn) => {
     })
     .catch(() => console.log('DB not connected'));
 
+/********app use body parser */
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 /********app routing**************/
 
@@ -36,13 +40,18 @@ app.get('/', (req, res) => {
 })
 
 /********api call for msg*********/
-app.get('/api/msg', (req, res) => {
+app.get('/api/message/msg', (req, res) => {
     message.msg(order.orderModule, req, res);
 })
 
 /********api call for msg greet****************/
-app.get('/api/greetMsg', (req, res) => {
+app.get('/api/message/greetMsg', (req, res) => {
     message.greetMsg(order.orderModule, req, res);
+})
+
+/********api call for cancel msg****************/
+app.get('/api/message/cancelMsg', (req, res) => {
+    message.cancelMsg(order.orderModule, req, res);
 })
 
 /*****api call for pin verification*******/
@@ -57,13 +66,14 @@ app.get('/api/foodType', (req, res) => {
 })
 
 /*****api call for fetching the type of food available for other pin code*******/
-app.get('/api/foodTypeOther', (req, res) => {
-    foodTypeOther(order.foodModule, req, res);
+app.get('/api/foodTypeOtherLocation', (req, res) => {
+    foodTypeOtherLocation(order.foodModule, req, res);
 })
 
 /*******api call for fetching the foodData*****/
 app.get('/api/foodData', (req, res) => {
-    foodData(order.orderModule, req, res);
+    console.log('hello world')
+    foodData(order.orderModule, req, res, pincode);
 })
 
 /*****api call for order cancellation*******/
@@ -82,6 +92,11 @@ app.get('/api/smsSend', (req, res) => {
 })
 
 /******Running on port 8080******/
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
-});
+if (!module.parent) {
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}`);
+    });
+}
+
+/*******exporting express server app for testing *******/
+module.exports = app;
