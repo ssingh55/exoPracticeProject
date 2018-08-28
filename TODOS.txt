@@ -1,4 +1,4 @@
-Tracability for errors. For ex: SMS is not sent, so your code or logs should be clearly say- sms is sent or not
+Tracability for errors. For ex: SMS is not sent, so your code or logs should clearly say- sms is sent or not
 
 Modularize your server.js code.
 

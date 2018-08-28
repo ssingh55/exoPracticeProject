@@ -4,13 +4,16 @@ const mongoose = require('mongoose'),
     app = express(),
     port = 8080,
     URI = "mongodb://exotel:exotel272@ds123372.mlab.com:23372/exotelfoodorder",
-    order = require('./model'),
-    request = require('request');
+    order = require('./model');
 let pincode = '';
-mongoose.connect(URI, { useNewUrlParser: true }, () => {
+mongoose.connect(URI, {
+    useNewUrlParser: true
+}, () => {
     console.log('DB connected')
 })
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.get('/', (req, res) => {
     res.send('hello')
@@ -22,8 +25,7 @@ app.get('/api/verifyPin', (req, res) => {
     if (req.query.digits.slice(1, -1).length === 6 && req.query.digits.slice(1, -1).startsWith(560)) {
         pincode = req.query.digits.slice(1, -1);
         res.sendStatus(200);
-    }
-    else
+    } else
         res.sendStatus(404)
 })
 
@@ -44,14 +46,18 @@ app.get('/api/foodType', async (req, res) => {
 
 app.get('/api/msg', (req, res) => {
     console.log('inside api msg', req.query.To)
-    order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
+    order.orderModule.findOne({}).sort({
+        $natural: -1
+    }).then((data) => {
         res.type('text/plain');
         res.send(`Order of ${data.orderType} from ${data.orderFrom} with order id ${data._id} has been placed`);
     })
 })
 
 app.get('/api/greetMsg', (req, res) => {
-    order.orderModule.findOne({}).sort({ $natural: -1 }).then((data) => {
+    order.orderModule.findOne({}).sort({
+        $natural: -1
+    }).then((data) => {
         res.type('text/plain');
         res.send(`Thanks for placing the order. Order of ${data.orderType} with orderid ${data._id} has been placed`);
     })
@@ -109,12 +115,16 @@ app.get('/api/foodData', async (req, res) => {
     order.orderModule.create(orderDetails).then((data) => {
         console.log('inside ordermodule')
         res.sendStatus(200);
-    }).catch((e) => { })
+    }).catch((e) => {})
 })
 
 app.get('/api/foodDataCancel', (req, res) => {
     console.log(parseInt(req.query.digits.slice(1, -1)));
-    order.orderModule.findByIdAndUpdate(req.query.digits.slice(1, -1), { $set: { orderPlaced: false } }, (err, data) => {
+    order.orderModule.findByIdAndUpdate(req.query.digits.slice(1, -1), {
+        $set: {
+            orderPlaced: false
+        }
+    }, (err, data) => {
         if (err || data == null || !data.orderPlaced) {
             console.log('inside error block')
             res.sendStatus(404);
